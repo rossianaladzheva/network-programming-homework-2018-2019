@@ -6,21 +6,20 @@ import java.util.Scanner;
 
 public class Client {
     final static String IP = "224.0.0.1";
-    final static int PORT = 4444;
     final static int BUFF_LEN = 4096;
-    private static Scanner sc = new Scanner(System.in);
+    final static int PORT = 4444;
 
     private MulticastSocket socket;
     private InetAddress addr;
     private String userName;
     private byte[] buff;
 
-    Client(MulticastSocket _socket, String _groupIP, String _userName) {
+    Client(int _port, String _addr, String _userName) {
         userName = _userName;
-        buff = new byte[BUFF_LEN];
         try {
-            socket = new MulticastSocket(PORT);
-            addr = InetAddress.getByName(_groupIP);
+            buff = new byte[BUFF_LEN];
+            socket = new MulticastSocket(_port);
+            addr = InetAddress.getByName(_addr);
             socket.joinGroup(addr);
         } catch (IOException e) {
             e.printStackTrace();
@@ -37,6 +36,28 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void communicate(){
+        Thread receiving = new Thread(new ReceiveThread(socket, addr, userName, PORT));
+        receiving.start();
+        while(true){
+            System.out.println("What type of message are you sending? (TEXT, IMAGE, VIDEO) ");
+            Scanner sc = new Scanner(System.in);
+            String msgType = sc.nextLine();
+
+            System.out.println("Enter your message: ");
+            String msg = sc.nextLine();
+            sendData(msg);
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Username: ");
+        Scanner sc = new Scanner(System.in);
+        String userName = sc.nextLine();
+        Client client = new Client(PORT,IP,userName );
+        client.communicate();
     }
 }
 
