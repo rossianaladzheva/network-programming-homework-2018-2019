@@ -28,7 +28,7 @@ public class Client {
 
     public void sendData(String msg) {
         try (DatagramSocket dgSocket = new DatagramSocket()) {
-            String data = userName + msg;
+            String data = userName + ": " + msg;
             DatagramPacket packet = new DatagramPacket(data.getBytes(), data.getBytes().length, addr, PORT);
             socket.send(packet);
         } catch (SocketException e) {
@@ -38,14 +38,13 @@ public class Client {
         }
     }
 
-    public void communicate(){
+    public void communicate() {
         Thread receiving = new Thread(new ReceiveThread(socket, addr, userName, PORT));
         receiving.start();
-        while(true){
+        while (true) {
             System.out.println("What type of message are you sending? (TEXT, IMAGE, VIDEO) ");
             Scanner sc = new Scanner(System.in);
             String msgType = sc.nextLine();
-
             System.out.println("Enter your message: ");
             String msg = sc.nextLine();
             sendData(msg);
@@ -56,7 +55,7 @@ public class Client {
         System.out.println("Username: ");
         Scanner sc = new Scanner(System.in);
         String userName = sc.nextLine();
-        Client client = new Client(PORT,IP,userName );
+        Client client = new Client(PORT, IP, userName);
         client.communicate();
     }
 }

@@ -19,7 +19,6 @@ public class ReceiveThread implements Runnable {
         addr = _addr;
         userName = _userName;
         port = _port;
-
     }
 
     @Override
@@ -30,10 +29,7 @@ public class ReceiveThread implements Runnable {
             try {
                 socket.receive(packet);
                 String msg = new String(buff, 0, buff.length);
-                String[] message = msg.split(" ");
-                if(message[0].equals("TEXT")){
-                    System.out.println(msg.substring(message[0].length()));
-                }
+                System.out.println(msg);
             } catch (IOException e) {
                 e.printStackTrace();
             }
